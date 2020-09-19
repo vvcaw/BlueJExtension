@@ -1,15 +1,10 @@
 package de.elfsoft;
 
-import bluej.extensions.*;
-import bluej.extensions.editor.Editor;
-import bluej.extensions.editor.TextLocation;
-import bluej.extensions.event.ClassEvent;
-import bluej.extensions.event.ClassListener;
+import bluej.extensions.BlueJ;
+import bluej.extensions.Extension;
+import bluej.extensions.ExtensionException;
 import bluej.extensions.event.PackageEvent;
 import bluej.extensions.event.PackageListener;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 
 
 public class lol extends Extension implements PackageListener {
