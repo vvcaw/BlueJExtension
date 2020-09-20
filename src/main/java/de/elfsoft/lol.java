@@ -3,8 +3,12 @@ package de.elfsoft;
 import bluej.extensions.BlueJ;
 import bluej.extensions.Extension;
 import bluej.extensions.ExtensionException;
+import bluej.extensions.event.ClassEvent;
+import bluej.extensions.event.ClassListener;
 import bluej.extensions.event.PackageEvent;
 import bluej.extensions.event.PackageListener;
+
+import javax.swing.*;
 
 
 public class lol extends Extension implements PackageListener {
@@ -13,9 +17,8 @@ public class lol extends Extension implements PackageListener {
         return true;
     }
 
-    public void startup(BlueJ blueJ) {
-        MenuBuilder myMenus = new MenuBuilder();
-        blueJ.setMenuGenerator(myMenus);
+    public void startup(final BlueJ blueJ) {
+        EditorFinder editorFinder = new EditorFinder(blueJ);
         System.out.println("Hello");
         blueJ.addPackageListener(this);
     }
