@@ -3,11 +3,10 @@ package de.elfsoft;
 import bluej.extensions.*;
 import bluej.extensions.editor.Editor;
 import bluej.extensions.editor.TextLocation;
-import bluej.extensions.event.ClassEvent;
-import bluej.extensions.event.ClassListener;
-import bluej.extensions.event.ExtensionEvent;
-import bluej.extensions.event.ExtensionEventListener;
+import bluej.extensions.event.*;
 import bluej.extensions.painter.ExtensionClassTargetPainter;
+import org.graalvm.compiler.java.BciBlockMapping;
+import org.w3c.dom.Text;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +18,7 @@ public class EditorFinder {
     BClass activeClass;
     Editor activeEditor;
     int lineCount = 0;
+    BClass[] currentClasses;
 
     EditorFinder(BlueJ blueJ) {
         blueJ.addClassListener(new ClassListener() {
@@ -27,10 +27,39 @@ public class EditorFinder {
                 handleClassStateChange(classEvent);
             }
         });
+        blueJ.addPackageListener(new PackageListener() {
+            @Override
+            public void packageOpened(PackageEvent packageEvent) {
+                try {
+                    currentClasses = packageEvent.getPackage().getClasses();
+                } catch (ProjectNotOpenException | PackageNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void packageClosing(PackageEvent packageEvent) {
+
+            }
+        });
         //customThread.start();
     }
 
     void handleClassStateChange(ClassEvent classEvent){
+        for (BClass wantedClass:currentClasses) {
+            if(classEvent.getBClass().equals(wantedClass)){
+            }
+            else {
+                BClass newClass = classEvent.getBClass();
+                try {
+                    newClass.getEditor().setText(new TextLocation(0, 0), new TextLocation(newClass.getEditor().getLineCount(), newClass.getEditor().getLineLength(newClass.getEditor().getLineCount())), "hallo");
+                } catch (ProjectNotOpenException | PackageNotFoundException e) {
+                    e.printStackTrace();
+                }
+                currentClasses[currentClasses.length -1] = classEvent.getBClass();
+            }
+        }
+
         if(!classEvent.getBClass().equals(activeClass)){
             activeClass = classEvent.getBClass();
             try {
