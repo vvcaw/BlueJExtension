@@ -1,6 +1,7 @@
 package de.elfsoft;
 
 import bluej.extensions.*;
+import bluej.extensions.ClassNotFoundException;
 import bluej.extensions.editor.Editor;
 import bluej.extensions.editor.TextLocation;
 import bluej.extensions.event.*;
@@ -21,6 +22,7 @@ public class EditorFinder {
     BClass[] currentClasses;
 
     EditorFinder(BlueJ blueJ) {
+        currentClasses = new BClass[100];
         blueJ.addClassListener(new ClassListener() {
             @Override
             public void classStateChanged(ClassEvent classEvent) {
@@ -46,18 +48,23 @@ public class EditorFinder {
     }
 
     void handleClassStateChange(ClassEvent classEvent){
-        for (BClass wantedClass:currentClasses) {
-            if(classEvent.getBClass().equals(wantedClass)){
-            }
-            else {
-                BClass newClass = classEvent.getBClass();
-                try {
-                    newClass.getEditor().setText(new TextLocation(0, 0), new TextLocation(newClass.getEditor().getLineCount(), newClass.getEditor().getLineLength(newClass.getEditor().getLineCount())), "hallo");
-                } catch (ProjectNotOpenException | PackageNotFoundException e) {
-                    e.printStackTrace();
+        try {
+            BMethod[] methods = classEvent.getBClass().getMethods();
+            for(BMethod bMethod:methods){
+                if(bMethod.getName().equals("beispielMethode")){
+                    String bClassName = classEvent.getBClass().getName();
+                    Editor e = classEvent.getBClass().getEditor();
+                    int lineCount = e.getLineCount() -1;
+                    int lineLenght = e.getLineLength(e.getLineCount() -1);
+                    if(lineLenght == -1) {
+                        lineLenght = 0;
+                    }
+                    e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+                    break;
                 }
-                currentClasses[currentClasses.length -1] = classEvent.getBClass();
             }
+        } catch (ProjectNotOpenException | ClassNotFoundException | PackageNotFoundException e) {
+            e.printStackTrace();
         }
 
         if(!classEvent.getBClass().equals(activeClass)){
