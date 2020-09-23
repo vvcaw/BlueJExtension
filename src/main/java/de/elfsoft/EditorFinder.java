@@ -20,6 +20,8 @@ public class EditorFinder {
     Editor activeEditor;
     int lineCount = 0;
     BClass[] currentClasses;
+    BClass lasClass;
+    boolean lastTime = true;
 
     EditorFinder(BlueJ blueJ) {
         currentClasses = new BClass[100];
@@ -48,29 +50,36 @@ public class EditorFinder {
     }
 
     void handleClassStateChange(ClassEvent classEvent){
+        boolean lastClassIsSuperClass = false;
+
         try {
-            BMethod[] methods = classEvent.getBClass().getMethods();
-            for(BMethod bMethod:methods){
-                if(bMethod.getName().equals("beispielMethode")){
-                    String bClassName = classEvent.getBClass().getName();
-                    Editor e = classEvent.getBClass().getEditor();
-                    int lineCount = e.getLineCount() -1;
-                    int lineLenght = e.getLineLength(e.getLineCount() -1);
-                    if(lineLenght == -1) {
-                        lineLenght = 0;
+            if(!lastClassIsSuperClass){
+                BMethod[] methods = classEvent.getBClass().getMethods();
+                for(BMethod bMethod:methods){
+                    if(bMethod.getName().equals("beispielMethode")){
+                        String bClassName = classEvent.getBClass().getName();
+                        Editor e = classEvent.getBClass().getEditor();
+                        int lineCount = e.getLineCount() -1;
+                        int lineLenght = e.getLineLength(e.getLineCount() -1);
+                        if(lineLenght == -1) {
+                            lineLenght = 0;
+                        }
+                        e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+                        break;
                     }
-                    e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
-                    break;
                 }
             }
         } catch (ProjectNotOpenException | ClassNotFoundException | PackageNotFoundException e) {
             e.printStackTrace();
         }
 
-        if(!classEvent.getBClass().equals(activeClass)){
+
+        if(!classEvent.getBClass().equals(activeClass) && !lastClassIsSuperClass){
+            lasClass = classEvent.getBClass();
             activeClass = classEvent.getBClass();
             try {
                 activeEditor = activeClass.getEditor();
+                activeEditor.showMessage("HELPER IS ACTIVATED!");
             } catch (ProjectNotOpenException | PackageNotFoundException e) {
                 e.printStackTrace();
             }
