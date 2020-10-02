@@ -19,16 +19,15 @@ public class lol extends Extension implements PackageListener {
 
     public void startup(final BlueJ blueJ) {
         EditorFinder editorFinder = new EditorFinder(blueJ);
-        System.out.println("Hello");
         blueJ.addPackageListener(this);
     }
 
     public String getName() {
-        return "Hello World Extension";
+        return "No More Sample Classes";
     }
 
     public String getVersion() {
-        return "0.0.1";
+        return "1.0.0";
     }
 
     public void packageOpened(PackageEvent packageEvent) {
