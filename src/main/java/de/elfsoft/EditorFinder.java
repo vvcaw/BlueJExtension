@@ -33,7 +33,11 @@ public class EditorFinder {
     void handleClassStateChange(ClassEvent classEvent){
         try {
             if (toHandle.size() != 0){
-                handleNewClass(toHandle.getFirst());
+                for (BClass item:toHandle){
+                    if (classEvent.getBClass().equals(item)){
+                        handleNewClass(item);
+                    }
+                }
             }
             BClass[] classes = classEvent.getPackage().getClasses();
 
@@ -55,30 +59,34 @@ public class EditorFinder {
             Editor e = bClass.getEditor();
             String bClassName = bClass.getName();
             int lineCount = e.getLineCount() -1;
-            int lineLenght = e.getLineLength(e.getLineCount() -1);
+            int lineLength = e.getLineLength(e.getLineCount() -1);
             String text = e.getText(new TextLocation(0, 0), new TextLocation(e.getLineCount() -1, e.getLineLength(e.getLineCount() -1)));
 
             //abstract class
             if (text.contains("abstract")){
-                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "abstract class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "abstract class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+                toHandle.clear();
             }
 
             //interface
             if (text.contains("interface")){
-                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "interface " + bClassName + "{" + "\n    " + "\n" + "}");
+                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "interface " + bClassName + "{" + "\n    " + "\n" + "}");
+                toHandle.clear();
             }
 
             //enum
             if (text.contains("enum")){
-                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "enum " + bClassName + "{" + "\n    " + "\n" + "}");
+                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "enum " + bClassName + "{" + "\n    " + "\n" + "}");
+                toHandle.clear();
             }
 
             //normal class
-            else {
-                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLenght), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+            else if (!text.contains("unit")){
+                e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
+                toHandle.clear();
             }
 
-            toHandle.remove(bClass);
+
 
         } catch (ProjectNotOpenException | PackageNotFoundException projectNotOpenException) { }
     }
