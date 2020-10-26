@@ -18,7 +18,7 @@ public class lol extends Extension implements PackageListener {
     }
 
     public void startup(final BlueJ blueJ) {
-        EditorFinder editorFinder = new EditorFinder(blueJ);
+        new EditorFinder(blueJ);
         blueJ.addPackageListener(this);
     }
 
