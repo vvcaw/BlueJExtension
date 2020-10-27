@@ -65,25 +65,25 @@ public class EditorFinder {
             //abstract class
             if (text.contains("abstract")){
                 e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "abstract class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
-                toHandle.clear();
+                toHandle.remove(bClass);
             }
 
             //interface
             if (text.contains("interface")){
                 e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "interface " + bClassName + "{" + "\n    " + "\n" + "}");
-                toHandle.clear();
+                toHandle.remove(bClass);
             }
 
             //enum
             if (text.contains("enum")){
                 e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "enum " + bClassName + "{" + "\n    " + "\n" + "}");
-                toHandle.clear();
+                toHandle.remove(bClass);
             }
 
             //normal class
             else if (!text.contains("unit")){
                 e.setText(new TextLocation(0, 0), new TextLocation(lineCount, lineLength), "class " + bClassName + "{" + "\n    " + bClassName + "(){" + "\n    " + "        " + "\n    " + "}" + "\n" + "}");
-                toHandle.clear();
+                toHandle.remove(bClass);
             }
 
 
